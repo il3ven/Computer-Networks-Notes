@@ -371,6 +371,16 @@ To estimate the amount of time that elapses when a client requests the base HTML
 For the page and each object it contains, a TCP connection must be opened (handshake request, handshake answer), we therefore observe an addition RTT, and for each object we will have a request followed by the reply
 This model can be expensive on the server side: a new connection needs to be established for each requested object, for each connection a TCP buffer must be allocated along some memory to store TCP variables.
 
+Example Communication with http://www.someSchool.edu/someDepartment/home.index
+1. The HTTPclient process initiates a TCPconnection to the server www.someSchool.edu on port number 80, which is the default port number for HTTP. Associated with the TCPconnection, __there will be a socket at the client and a socket at the server.__
+2. The HTTPclient sends an HTTPrequest message to the server via its socket. The request message includes the path name /someDepartment/home.index. (We will discuss HTTPmessages in some detail below.) 
+3. The HTTPserver process receives the request message via its socket, retrieves the object /someDepartment/home.index from its storage (RAM or disk), encapsulates the object in an HTTPresponse message, and sends the response message to the client via its socket. 
+4. The HTTPserver process tells TCPto close the TCPconnection. (But TCP doesn’t actually terminate the connection until it knows for sure that the client has received the response message intact.) 
+5. The HTTPclient receives the response message. The TCPconnection terminates. The message indicates that the encapsulated object is an HTMLfile. The client extracts the file from the response message, examines the HTMLfile, and finds references to the 10 JPEG objects.
+6. The first four steps are then repeated for each of the referenced JPEG objects.
+
+For transfering 1 base HTML file + 10 JPEG files that reside on the same server a total of 11 TCP connections are generated.
+
 #### HTTP with Persistent Connections
 The server leaves the TCP connection open after sending a response, subsequent requests and responses between the same client and server will be sent over the same connection. In particular an entire web page (text + objects) ca be sent over a single persistent TCP connection, multiple web pages residing on the same server can be sent from the server to the same client over a single persistent TCP connection.
 **These requests can be make back-to-back** without waiting for replies to pending requests (**pipelining**).
