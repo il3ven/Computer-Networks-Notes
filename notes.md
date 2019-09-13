@@ -368,7 +368,7 @@ By default HTTP uses non-persistent connections but can be configured to be use 
 To estimate the amount of time that elapses when a client requests the base HTML file until the entire file is received by the client we define the **round-trip time** (**RTT**) which is the time it takes for a small packet to travel from client to server and then back to the client.
 
 #### HTTP with Non-Persistent Connections
-For the page and each object it contains, a TCP connection must be opened (handshake request, handshake answer), we therefore observe an addition RTT, and for each object we will have a request followed by the reply
+For the page and each object it contains, a TCP connection must be opened (handshake request, handshake answer), we therefore observe an addition RTT, and for each object we will have a request followed by the reply. TCP is a **three way handshake.**
 This model can be expensive on the server side: a new connection needs to be established for each requested object, for each connection a TCP buffer must be allocated along some memory to store TCP variables.
 
 Example Communication with http://www.someSchool.edu/someDepartment/home.index
@@ -393,7 +393,7 @@ If connection isn't used for a pre-decided amount of time, it will be closed.
 Two types of HTTP messages:
 
 #### HTTP Request Message
-
+The HTTP request message can have many more lines or as few as one line. 
 ```
 GET /somedir/page.html HTTP/1.1
 Host: www.someschool.edu
@@ -404,9 +404,14 @@ Accept-language: fr
 
  - Ordinary ASCII text
  - First line: **request line**
- - Other lines: **header lines**
  - the first lines has 3 fields: method field, URL field, HTTP version field:
 	- method field possible values: `GET, POST, HEAD, PUT, DELETE`
+ - Other lines: **header lines**
+ 	- Host: Used by Web Proxy Cache
+	- Connection: Close this TCP connection
+	- User Agent: The browser sending the request. Server can send different version of web page.
+	- Accept-Language: Language of web page to be sent.
+	* There can also be other content negotiation headers.
 
 The majority of HTTP requests use the GET method, used to request an object.
 
