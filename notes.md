@@ -502,7 +502,7 @@ A conditional get message is sent from the cache to server which responds only i
 One identifier for a host is its **hostname** [`cnn.com`, `www.yahoo.com`]. Hostnames are mnemonic and therefore used by humans. Hosts are also identified by **IP addresses**.
 
 ### 2.5.1 Services provided by DNS
-Routers and use IP addresses. The Internet's **domain name system (DNS)** translates hostnames to IP addresses. The DNS is:
+Routers prefer IP addresses whereas humans prefer names . The Internet's **domain name system (DNS)** translates hostnames to IP addresses. The DNS is:
 
  1. A distributed database implemented in a hierarchy of **DNS Servers**
  2. An application-layer protocol that allows hosts to query the distributed database.
@@ -520,11 +520,11 @@ How it works:
  - The DNS client eventually receives a reply including the IP address for the hostname
  - The browser can initiate a TCP connection.
 
-**DNS adds an additional delay**
+**DNS adds an additional delay**. The desired IP address is often cached in a “nearby” DNS server.
 
 DNS provides other services in addition to translating hostnames to IP addresses:
 
- - **host aliasing**: a host with a complicated hostname can have more alias names. The original one is said to be a **canonical hostname**.
+ - **host aliasing**: a host with a complicated hostname can have more alias names. The original one is said to be a **canonical hostname**. relay1.west-coast.enterprise.com is canonical name whereas `www.enterprise.com` is an alias.
  - **mail server aliasing**: to make email servers' hostnames more mnemonic. This also allows for an e-mail server and an Web server to have the same hostname.
  - **load distribution**: replicated servers can have the same hostname. In this case, a set of IP addresses is associated with one canonical hostname. When a client make a DNS query for a name mapped to a set of addresses, the server responds with the entire set, but rotates the ordering within each reply.
 
@@ -544,14 +544,17 @@ The three classes of DNS servers:
  - **Top-level domain (TLD) servers**: responsible for top-level domains such as com org net edu and govand all of the country top-level domains uk fr jp
  - **Authoritative DNS servers**: every organization with publicly accessible hosts must provide publicly accessible DNS records that map the names of those hosts to IP addresses. An organization can choose to implement its own authoritative DNS server or to pay to have the records stored in an authoritative DNS of some service provider.
 
+For example a request for amazon.com first goes to Root DNS server which returns IP address for TLD server(.com here). TLD Server then returns address for hostname amazon.com.
+
 Finally there are **local DNS servers** which is central to the DNS architecture. They are hosted by ISPs. When a hosts connects to one of these, the local DNS server provides the host with the IP addresses of one or more of its local DNS servers. Requests can ho up to the root DNS servers and back down.
 
 ![Alt text](./distributedDNS.png)
 
 We can have both **recursive** and **iterative queries**.
-In **recursive queries** the user sends the request its nearest DNS which will ask to a higher-tier server, which will ask to lower order... the chain goes on until it reaches a DNS that can reply, the reply will follow the inverse path that the request had.
+In **recursive queries** the user sends the request its nearest DNS which will ask to a higher-tier server, which will ask to lower order... the chain goes on until it reaches a DNS that can reply (each server is asking on behalf of the other server), the reply will follow the inverse path that the request had.
 In **iterative queries** the same machine sends requests and receives replies.
-Any DNS can be iterative or recursive or both.
+Any DNS can be iterative or recursive or both. In practice the query from the requesting host to the local DNS server is recursive, and the remaining queries are iterative.
+
 
 #### DNS Caching
 DNS extensively exploits DNS caching in order to improve the delay performance and to reduce the number of DNS messages ricocheting around the Internet.
