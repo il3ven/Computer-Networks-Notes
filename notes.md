@@ -364,7 +364,7 @@ The server sends requested files to clients without storing any state informatio
 ### 2.2.2 Non-Persistent and Persistent Connections
 In many Internet applications, the client and server communicate for an extended period of time, depending on the application and on how the application is being used, the series of requests may be back-to-back, periodically at regular intervals or intermittently. When this is happening over TCP, the developer must take an important decision: should each request/response pair be sent over a *separate* TCP connection or should all of the requests and their corresponding responses be sent over the *same* TCP connection?
 In the former approach, the application is said to use **non-persistent connections** and in the latter it is said to use **persistent connections**
-By default HTTP uses non-persistent connections but can be configured to be use persistent connections.
+*By default HTTP uses persistent* connections but can be configured to be use persistent connections.
 To estimate the amount of time that elapses when a client requests the base HTML file until the entire file is received by the client we define the **round-trip time** (**RTT**) which is the time it takes for a small packet to travel from client to server and then back to the client.
 
 #### HTTP with Non-Persistent Connections
