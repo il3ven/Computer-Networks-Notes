@@ -800,11 +800,21 @@ Some consequences:
 Two basic approaches toward pipelined error recovery can be identified: **Go-Back-N** and **Selective Repeat**
 
 ### 3.4.3 Go-Back-N (GBN)
-The sender is allowed to send N packets (**sender window size = N**), the receiver has a window of size **1**.
-If a segment from sender to receiver is lost, the receiver discards all the segments with sequence number greater than the sequence number of the dropped packet, answering with ACK with this sequence number. (no packet re-ordering)
-The sender will wait for ACK in order to move the window and send new packets. The wait is not infinite, after a certain time a timeout will occur and the sender will retransmit all the packets in the sending window.
-In a Go-Back-N protocol, acknowledgements are **cumulative**: if sender receives ACK3 he will know that all the packets from 0 to 3 have been received, even if hasn't received ACK2.
+#### Sender's Side
+* Sender's Windows is N.
+* If windows is not full then data coming from upper layer is assigned a sequence number and transmitted. Let the lowest unacknowledged sequence number be seqBase. Last sequence number that can be assigned will be seqBase + N - 1.
+* When acknowledge for packet number seqBase is recieved **only then** the window is slided (ie. seqBase++). 
+* If acknowledge for a packet is not recieved for a predetermined fixed amount of time then all of the packets in the sliding window are sent again.
+
+#### Reciever's Side
+* Reciever windows is 1.
+* Suppose packets with sequence number 0 to n-1 have been recieved. If packet n is recieved then reciever sends an acknowledgement.
+* In all other cases, the receiver discards the packet and resends an acknowledgement for the most recently received in-order packet.
+* Since packets are delivered one at a time there is no need to store them in a buffer. They are directly sent to the upper layer.
+ 
 ![Go-Back_N Sliding Windows](image.png)
+
+In a Go-Back-N protocol, acknowledgements are **cumulative**: if sender receives ACK3 he will know that all the packets from 0 to 3 have been received, even if hasn't received ACK2.
 
 ### 3.4.4 Selective Repeat
 When the window-size and bandwidth-delay product are both large, many packets can be in the pipeline and a single packet error can thus cause GBN to retransmit a large number of packets, many unnecessarily.
