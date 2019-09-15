@@ -573,6 +573,11 @@ A resource record is a four-tuple that contains the fields: `(Name, Value, Type,
 | NS    	| a domain (foo.com) 	| hostname of an  authoritative DNS server which knows how to obtain the IP addresses for hosts in the domain. Used to route queries further along in the query chain 	|
 | CNAME 	| a alias name       	| canonical hostname for the name in Name                                                                                                                             	|
 | MX    	| alias hostname     	| canonical hostname of a mail server that has an alias hostname Name                                                                                                 	|
+
+MX and CNAME allows a company to use the same alias name for Web and Mail server.
+
+If a server is not authoritative for a hostname, then the server will contain a Type NS (umass.edu, dns.umass.edu, NS) record for the domain that includes the hostname. It will also contain a Type A (dns.umass.edu, 128.119.40.111, A) record that provides the IP address of the DNS server in the Value field of the NS record.
+
 #### DNS Messages
 The only types of DNS messages are DNS queries and reply messages. They have the same format:
 
