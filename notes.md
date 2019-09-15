@@ -814,6 +814,10 @@ When the window-size and bandwidth-delay product are both large, many packets ca
 The sender has a timer for each packet in its window. When a timeout occurs, only the missing packet is resent.
 The receiver buffers out of order packets.
 
+If an already recived packet is recieved then it is acknowledged again. The sender and receiver will not always have an identical view of what has been received correctly and what has not. 
+
+Window size must be less than or equal to half the size of the sequence number space for SR protocols.
+
 ## 3.5 Conncetion-Oriented Transport: TCP
 ### 3.5.1 The TCP Connection
 TCP is said to be **connection-oriented** because before one application process can begin to send data to another, the two processes must first "handshake" with each other. During the connection establishment, both sides of the connection will initialize many TCP state variables.
